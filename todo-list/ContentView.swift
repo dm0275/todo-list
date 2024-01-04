@@ -8,14 +8,41 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var task = ""
+    @State private var tasks: [String] = []
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationView {
+            VStack {
+                List {
+                    ForEach(tasks, id: \.self) { task in
+                        Text(task)
+                    }
+                    .onDelete(perform: deleteTask)
+                }
+
+                TextField("Add a new task", text: $task, onCommit: addTask)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+
+                Button(action: addTask) {
+                    Text("Add Task")
+                }
+            }
+            .padding(.bottom)
+            .navigationTitle("To-Do List")
         }
-        .padding()
+    }
+
+    func addTask() {
+        if !task.isEmpty {
+            tasks.append(task)
+            task = ""
+        }
+    }
+
+    func deleteTask(at offsets: IndexSet) {
+        tasks.remove(atOffsets: offsets)
     }
 }
 
